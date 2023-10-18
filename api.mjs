@@ -1,26 +1,48 @@
 import path from 'node:path';
 import http from 'node:http';
-import os from 'node:os';
+// import os from 'node:os';
 import express from 'express';
 // import backgroundRemoval from '@imgly/background-removal';
 import backgroundRemoval from '@imgly/background-removal-node';
 
 //
 
-import {
-  headers,
-} from './background-remover.mjs';
-// import handleFetch from './background-remover.mjs';
+export const headers = [
+  {
+    "key": "Access-Control-Allow-Origin",
+    "value": "*"
+  },
+  {
+    "key": "Access-Control-Allow-Methods",
+    "value": "*"
+  },
+  {
+    "key": "Access-Control-Allow-Headers",
+    "value": "*"
+  },
+  {
+    "key": "Access-Control-Expose-Headers",
+    "value": "*"
+  },
+  {
+    "key": "Access-Control-Allow-Private-Network",
+    "value": "true"
+  }
+];
+const headerObjects = {};
+for (const header of headers) {
+  headerObjects[header.key] = header.value;
+}
 
 //
 
 const port = process.env.PORT || 5432;
-globalThis.navigator = {
-  hardwareConcurrency: os.cpus().length,
-};
+// globalThis.navigator = {
+//   hardwareConcurrency: os.cpus().length,
+// };
 // const publicPath = 'file://' + path.join(process.cwd(), './public/onnx/');
 // console.log(publicPath);
-const publicPath = 'http://127.0.0.1:' + port + '/onnx/';
+// const publicPath = 'http://127.0.0.1:' + port + '/onnx/';
 
 //
 
