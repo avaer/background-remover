@@ -1,8 +1,6 @@
 import path from 'node:path';
 import http from 'node:http';
-// import os from 'node:os';
 import express from 'express';
-// import backgroundRemoval from '@imgly/background-removal';
 import backgroundRemoval from '@imgly/background-removal-node';
 
 //
@@ -37,18 +35,11 @@ for (const header of headers) {
 //
 
 const port = process.env.PORT || 5432;
-// globalThis.navigator = {
-//   hardwareConcurrency: os.cpus().length,
-// };
-// const publicPath = 'file://' + path.join(process.cwd(), './public/onnx/');
-// console.log(publicPath);
-// const publicPath = 'http://127.0.0.1:' + port + '/onnx/';
 
 //
 
 // start http server
 const app = express();
-// app.use(express.static(path.join(__dirname, './public')));
 app.use(express.static(path.join(process.cwd(), './public')));
 app.options('*', (req, res) => {
   res.set(headers);
