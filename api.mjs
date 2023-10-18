@@ -42,7 +42,7 @@ const port = process.env.PORT || 5432;
 const app = express();
 app.use(express.static(path.join(process.cwd(), './public')));
 app.options('*', (req, res) => {
-  res.set(headers);
+  res.set(headerObjects);
   res.end();
 });
 app.post('*', (req, res) => {
@@ -68,11 +68,12 @@ app.post('*', (req, res) => {
       const arrayBuffer2 = await blob2.arrayBuffer();
       const buffer2 = Buffer.from(arrayBuffer2);
 
-      res.set(headers);
+      res.set(headerObjects);
       res.set('Content-Type', 'image/png');
       res.end(buffer2);
     } catch(err) {
-      res.set(headers);
+      res.status(500);
+      res.set(headerObjects);
       // res.set('Content-Type', 'image/png');
       res.end(err.stack);
     }
