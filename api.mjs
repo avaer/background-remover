@@ -72,4 +72,6 @@ app.post('*', (req, res) => {
 });
 
 http.createServer(app)
-  .listen(port);
+  .listen(port, () => {
+    console.log(`Running: server listening on port ${port}`);
+  });
