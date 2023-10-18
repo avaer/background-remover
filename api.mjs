@@ -52,22 +52,30 @@ app.post('*', (req, res) => {
   });
   req.on('end', async () => {
     const b = Buffer.concat(buffers);
-    const blob = new Blob(buffers, {
+    const blob = new Blob([
+      b,
+    ], {
       type: 'image/png',
     });
-    const blob2 = await backgroundRemoval(blob, {
-      // publicPath,
-      // debug: true,
-      // progress: (key, current, total) => {
-      //   console.log(`Downloading ${key}: ${current} of ${total}`);
-      // },
-    });
-    const arrayBuffer2 = await blob2.arrayBuffer();
-    const buffer2 = Buffer.from(arrayBuffer2);
+    try {
+      const blob2 = await backgroundRemoval(blob, {
+        // publicPath,
+        // debug: true,
+        // progress: (key, current, total) => {
+        //   console.log(`Downloading ${key}: ${current} of ${total}`);
+        // },
+      });
+      const arrayBuffer2 = await blob2.arrayBuffer();
+      const buffer2 = Buffer.from(arrayBuffer2);
 
-    res.set(headers);
-    res.set('Content-Type', 'image/png');
-    res.end(buffer2);
+      res.set(headers);
+      res.set('Content-Type', 'image/png');
+      res.end(buffer2);
+    } catch(err) {
+      res.set(headers);
+      // res.set('Content-Type', 'image/png');
+      res.end(err.stack);
+    }
   });
 });
 
