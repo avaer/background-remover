@@ -64,6 +64,11 @@ app.post('*', (req, res) => {
         // progress: (key, current, total) => {
         //   console.log(`Downloading ${key}: ${current} of ${total}`);
         // },
+        output: {
+          // format: 'image/png' | 'image/jpeg' | 'image/webp'; // The output format. (Default "image/png")
+          quality: 1,
+          // type: 'foreground' | 'background' | 'mask'; // The output type. (Default "foreground")
+        },
       });
       const arrayBuffer2 = await blob2.arrayBuffer();
       const buffer2 = Buffer.from(arrayBuffer2);
