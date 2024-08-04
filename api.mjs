@@ -46,6 +46,10 @@ app.options('*', (req, res) => {
   res.end();
 });
 app.post('*', (req, res) => {
+  const format = req.headers['format'] || 'image/webp'; // 'image/png' | 'image/jpeg' | 'image/webp'; // The output format. (Default "image/png")
+  const quality = parseFloat(req.headers['quality'] || '') || undefined; // 0-1; default: 0.8
+  const type = req.headers['type']; // 'foreground' | 'background' | 'mask'; // The output type. (Default "foreground")
+
   const buffers = [];
   req.on('data', d => {
     buffers.push(d);
@@ -65,9 +69,9 @@ app.post('*', (req, res) => {
         //   console.log(`Downloading ${key}: ${current} of ${total}`);
         // },
         output: {
-          // format: 'image/png' | 'image/jpeg' | 'image/webp'; // The output format. (Default "image/png")
-          quality: 1,
-          // type: 'foreground' | 'background' | 'mask'; // The output type. (Default "foreground")
+          format,
+          quality,
+          type,
         },
       });
       const arrayBuffer2 = await blob2.arrayBuffer();
@@ -80,7 +84,9 @@ app.post('*', (req, res) => {
       res.status(500);
       res.set(headerObjects);
       // res.set('Content-Type', 'image/png');
-      res.end(err.stack);
+      res.end(JSON.stringify({
+        error: `error: ${err.stack}`,
+      }));
     }
   });
 });
