@@ -34,7 +34,7 @@ for (const header of headers) {
 
 //
 
-const port = process.env.PORT || 5432;
+const port = process.env.PORT || 3000;
 
 //
 
