@@ -94,9 +94,9 @@ app.post('*', (req, res) => {
           type,
         },
       });
-      blob = null;
+      // blob = null;
       const arrayBuffer2 = await blob2.arrayBuffer();
-      blob2 = null;
+      // blob2 = null;
       const buffer2 = Buffer.from(arrayBuffer2);
 
       res.set(headerObjects);
