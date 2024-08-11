@@ -73,7 +73,7 @@ app.post('*', (req, res) => {
   };
   req.on('data', ondata);
   const onend = async () => {
-    const blob = new Blob(buffers, {
+    let blob = new Blob(buffers, {
       type: contentType,
     });
 
@@ -82,7 +82,7 @@ app.post('*', (req, res) => {
     cleanup();
 
     try {
-      const blob2 = await backgroundRemoval(blob, {
+      let blob2 = await backgroundRemoval(blob, {
         // publicPath,
         // debug: true,
         // progress: (key, current, total) => {
@@ -94,7 +94,9 @@ app.post('*', (req, res) => {
           type,
         },
       });
+      blob = null;
       const arrayBuffer2 = await blob2.arrayBuffer();
+      blob2 = null;
       const buffer2 = Buffer.from(arrayBuffer2);
 
       res.set(headerObjects);
