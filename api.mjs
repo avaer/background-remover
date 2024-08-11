@@ -46,6 +46,7 @@ app.options('*', (req, res) => {
   res.end();
 });
 app.post('*', (req, res) => {
+  const contentType = req.headers['content-type'];
   const format = req.headers['format'] || 'image/webp'; // 'image/png' | 'image/jpeg' | 'image/webp'; // The output format. (Default "image/png")
   const quality = parseFloat(req.headers['quality'] || '') || undefined; // 0-1; default: 0.8
   const type = req.headers['type']; // 'foreground' | 'background' | 'mask'; // The output type. (Default "foreground")
@@ -59,7 +60,7 @@ app.post('*', (req, res) => {
     const blob = new Blob([
       b,
     ], {
-      type: 'image/png',
+      type: contentType,
     });
     try {
       const blob2 = await backgroundRemoval(blob, {
