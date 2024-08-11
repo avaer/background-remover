@@ -52,16 +52,35 @@ app.post('*', (req, res) => {
   const type = req.headers['type']; // 'foreground' | 'background' | 'mask'; // The output type. (Default "foreground")
 
   const buffers = [];
-  req.on('data', d => {
-    buffers.push(d);
-  });
-  req.on('end', async () => {
-    const b = Buffer.concat(buffers);
-    const blob = new Blob([
-      b,
-    ], {
+  let uploadSize = 0;
+  const maxUploadSize = 25 * 1024 * 1024; // 25 MB
+  const ondata = d => {
+    uploadSize += d.length;
+    if (uploadSize <= maxUploadSize) {
+      buffers.push(d);
+    } else {
+      // gc optimization
+      buffers.length = 0;
+      cleanup();
+
+      res.status(400);
+      res.set(headerObjects);
+      // res.set('Content-Type', 'image/png');
+      res.end(JSON.stringify({
+        error: `upload overflow; limit = ${maxUploadSize}`,
+      }));
+    }
+  };
+  req.on('data', ondata);
+  const onend = async () => {
+    const blob = new Blob(buffers, {
       type: contentType,
     });
+
+    // gc optimization
+    buffers.length = 0;
+    cleanup();
+
     try {
       const blob2 = await backgroundRemoval(blob, {
         // publicPath,
@@ -86,10 +105,16 @@ app.post('*', (req, res) => {
       res.set(headerObjects);
       // res.set('Content-Type', 'image/png');
       res.end(JSON.stringify({
-        error: `error: ${err.stack}`,
+        error: err.stack,
       }));
     }
-  });
+  };
+  req.on('end', onend);
+
+  const cleanup = () => {
+    req.removeListener('data', ondata);
+    req.removeListener('end', onend);
+  };
 });
 
 http.createServer(app)
